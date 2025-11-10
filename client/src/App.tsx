@@ -13,6 +13,7 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import '@solana/wallet-adapter-react-ui/styles.css'
 import { Toaster } from '@/components/ui/toaster'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { Layout } from '@/components/layout'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
@@ -45,7 +46,8 @@ function App() {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             <QueryClientProvider client={queryClient}>
-              <BrowserRouter>
+              <TooltipProvider>
+                <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Layout />}>
                     <Route index element={<Markets />} />
@@ -78,6 +80,7 @@ function App() {
                 </Routes>
                 <Toaster />
               </BrowserRouter>
+              </TooltipProvider>
             </QueryClientProvider>
           </WalletModalProvider>
         </WalletProvider>

@@ -27,6 +27,7 @@ export function ThemeToggle() {
       size="icon"
       onClick={toggleTheme}
       title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
       {theme === 'light' ? (
         <Moon className="h-5 w-5" />

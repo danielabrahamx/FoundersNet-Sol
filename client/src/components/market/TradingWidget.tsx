@@ -6,6 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { useWallet } from '@/hooks/useWallet';
 import { useBalance } from '@/hooks/useBalance';
 import { useUserPositions } from '@/hooks/useUserPositions';
@@ -38,6 +46,7 @@ export function TradingWidget({ market }: TradingWidgetProps) {
   const [selectedOutcome, setSelectedOutcome] = useState<'yes' | 'no'>('yes');
   const [amount, setAmount] = useState<string>('');
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const yesPoolSOL = useMemo(() => lamportsToSol(market.yesPool), [market.yesPool]);
   const noPoolSOL = useMemo(() => lamportsToSol(market.noPool), [market.noPool]);
@@ -138,6 +147,15 @@ export function TradingWidget({ market }: TradingWidgetProps) {
       return;
     }
 
+    if (amountNum > 1) {
+      setShowConfirmation(true);
+      return;
+    }
+
+    confirmPlaceBet();
+  };
+
+  const confirmPlaceBet = () => {
     placeBet({
       marketId: market.publicKey.toString(),
       amount: amountNum,
@@ -145,6 +163,7 @@ export function TradingWidget({ market }: TradingWidgetProps) {
     });
 
     setAmount('');
+    setShowConfirmation(false);
   };
 
   let buttonText = 'Place Bet';
@@ -188,14 +207,15 @@ export function TradingWidget({ market }: TradingWidgetProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">Place Bet</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* User's Current Position */}
-        {currentPosition && (
-          <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800">
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">Place Bet</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* User's Current Position */}
+          {currentPosition && (
+            <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800">
             <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             <AlertDescription className="text-blue-900 dark:text-blue-300">
               You currently hold: {currentPosition.shares.toFixed(2)} {selectedOutcome.toUpperCase()} shares (cost: {formatSol(currentPosition.cost)})
@@ -339,7 +359,47 @@ export function TradingWidget({ market }: TradingWidgetProps) {
         >
           {isPlacingBet ? 'Placing Bet...' : buttonText}
         </Button>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* Confirmation Dialog for Large Bets */}
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirm Large Bet</DialogTitle>
+          <DialogDescription>
+            You're about to place a bet of {formatSol(amountNum)}. Please confirm this amount.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+            <p className="text-sm font-medium text-amber-900 dark:text-amber-300">
+              Betting {formatSol(amountNum)} on {selectedOutcome.toUpperCase()}
+            </p>
+            <p className="text-xs text-amber-800 dark:text-amber-400 mt-2">
+              Potential profit: +{payout.profitPercent.toFixed(1)}%
+            </p>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowConfirmation(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            onClick={confirmPlaceBet}
+            disabled={isPlacingBet}
+            className={selectedOutcome === 'yes' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}
+          >
+            {isPlacingBet ? 'Placing Bet...' : 'Confirm Bet'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+      </Dialog>
+    </>
   );
 }
