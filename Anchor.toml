@@ -1,18 +1,23 @@
+[toolchain]
+
 [features]
-seeds = false
-init-if-needed = true
+resolution = true
+skip-lint = false
 
 [programs.devnet]
+foundersnet = "AkWgeWixTroxjHczNkhRbLmNBFpoP45rP3Zarg25zjg3"
+
+[programs.mainnet]
 foundersnet = "EEZJxm2YmPHxH2VfqPXaS2k3qSmRhvKHEFMxjbzNxNfQ"
 
 [programs.testnet]
 foundersnet = "EEZJxm2YmPHxH2VfqPXaS2k3qSmRhvKHEFMxjbzNxNfQ"
 
-[programs.mainnet]
-foundersnet = "EEZJxm2YmPHxH2VfqPXaS2k3qSmRhvKHEFMxjbzNxNfQ"
+[registry]
+url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

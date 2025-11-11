@@ -1,9 +1,8 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::system_program;
+use anchor_lang::system_program::{transfer, Transfer};
 use std::mem::size_of;
-use std::str::FromStr;
 
-declare_id!("EEZJxm2YmPHxH2VfqPXaS2k3qSmRhvKHEFMxjbzNxNfQ");
+declare_id!("AkWgeWixTroxjHczNkhRbLmNBFpoP45rP3Zarg25zjg3");
 
 #[program]
 pub mod foundersnet {
@@ -56,12 +55,12 @@ pub mod foundersnet {
         // Transfer initial liquidity from creator to market
         let cpi_context = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
-            system_program::Transfer {
+            Transfer {
                 from: ctx.accounts.creator.to_account_info(),
-                to: ctx.accounts.market.to_account_info(),
+                to: market.to_account_info(),
             },
         );
-        anchor_lang::system_program::transfer(cpi_context, initial_liquidity)?;
+        transfer(cpi_context, initial_liquidity)?;
 
         emit!(MarketCreated {
             market: market.key(),
@@ -135,12 +134,12 @@ pub mod foundersnet {
         // Transfer SOL from user to market
         let cpi_context = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
-            system_program::Transfer {
+            Transfer {
                 from: ctx.accounts.user.to_account_info(),
-                to: ctx.accounts.market.to_account_info(),
+                to: market.to_account_info(),
             },
         );
-        anchor_lang::system_program::transfer(cpi_context, amount)?;
+        transfer(cpi_context, amount)?;
 
         emit!(BetPlaced {
             market: market.key(),
@@ -270,7 +269,11 @@ pub mod foundersnet {
 }
 
 // Admin wallet address
-const ADMIN_WALLET: Pubkey = Pubkey::from_str("78BDAjB4oTdjS4S734Ge2sRWWnHGDDJmPigbp27bSQ7g").unwrap();
+// 78BDAjB4oTdjS4S734Ge2sRWWnHGDDJmPigbp27bSQ7g
+const ADMIN_WALLET: Pubkey = Pubkey::new_from_array([
+    94, 171, 72, 89, 203, 45, 184, 70, 241, 119, 125, 148, 125, 56, 7,
+    231, 120, 163, 184, 134, 114, 44, 158, 40, 138, 161, 230, 41, 21, 144, 67, 230
+]);
 
 // Events
 
