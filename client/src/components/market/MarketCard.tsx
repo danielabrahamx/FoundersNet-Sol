@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Market } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { lamportsToSol, formatSol, getTimeRemaining } from '@/lib/utils';
 
 interface MarketCardProps {
@@ -51,7 +52,7 @@ export function MarketCard({ market }: MarketCardProps) {
   };
 
   const handleClick = () => {
-    navigate(`/market/${market.publicKey.toString()}`);
+    navigate(`/event/${market.publicKey.toString()}`);
   };
 
   return (
@@ -83,22 +84,36 @@ export function MarketCard({ market }: MarketCardProps) {
 
           {/* Pool Information */}
           <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-green-600 dark:text-green-400">
-                YES Pool
-              </span>
-              <span className="text-sm font-medium text-green-600 dark:text-green-400">
-                {formatSol(lamportsToSol(market.yesPool))} ({yesPercentage.toFixed(0)}%)
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-red-600 dark:text-red-400">
-                NO Pool
-              </span>
-              <span className="text-sm font-medium text-red-600 dark:text-red-400">
-                {formatSol(lamportsToSol(market.noPool))} ({noPercentage.toFixed(0)}%)
-              </span>
-            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex justify-between items-center cursor-help">
+                  <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                    YES Pool
+                  </span>
+                  <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                    {formatSol(lamportsToSol(market.yesPool))} ({yesPercentage.toFixed(0)}%)
+                  </span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Total amount bet on YES outcome</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex justify-between items-center cursor-help">
+                  <span className="text-sm font-medium text-red-600 dark:text-red-400">
+                    NO Pool
+                  </span>
+                  <span className="text-sm font-medium text-red-600 dark:text-red-400">
+                    {formatSol(lamportsToSol(market.noPool))} ({noPercentage.toFixed(0)}%)
+                  </span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Total amount bet on NO outcome</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           {/* Total Volume */}

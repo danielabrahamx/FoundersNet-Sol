@@ -51,7 +51,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Layout />}>
                     <Route index element={<Markets />} />
-                    <Route path="market/:marketId" element={<MarketDetail />} />
+                    <Route path="event/:eventId" element={<MarketDetail />} />
                     <Route 
                       path="portfolio" 
                       element={

@@ -20,7 +20,26 @@ export function MarketCardSkeleton() {
   );
 }
 
-export function MarketDetailSkeleton() {
+export function EventCardSkeleton() {
+  return (
+    <div className="rounded-lg border border-border bg-card p-4">
+      <Skeleton className="mb-3 h-6 w-3/4" />
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-5 w-20" />
+          <Skeleton className="h-5 w-20" />
+        </div>
+        <Skeleton className="h-4 w-1/2" />
+        <div className="pt-2 space-y-2">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-3/4" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function EventDetailSkeleton() {
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -46,7 +65,7 @@ export function MarketDetailSkeleton() {
             </div>
           </div>
 
-          {/* Trading Widget */}
+          {/* Betting Widget */}
           <div className="rounded-lg border border-border p-4">
             <Skeleton className="mb-4 h-6 w-32" />
             <div className="space-y-3">
