@@ -37,9 +37,11 @@ export function parseTransactionError(error: Error): string {
   if (
     message.includes("market closed") ||
     message.includes("market resolved") ||
-    message.includes("trading closed")
+    message.includes("trading closed") ||
+    message.includes("event closed") ||
+    message.includes("event resolved")
   ) {
-    return "This market is no longer accepting bets";
+    return "This event is no longer accepting bets";
   }
 
   if (message.includes("rate limit")) {

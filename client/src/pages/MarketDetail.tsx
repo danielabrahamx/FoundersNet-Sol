@@ -6,13 +6,13 @@ import { AlertCircle, ArrowLeft } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 export function MarketDetail() {
-  const { marketId } = useParams<{ marketId: string }>()
-  const { data: market, isLoading, error } = useMarket(marketId)
+  const { eventId } = useParams<{ eventId: string }>()
+  const { data: market, isLoading, error } = useMarket(eventId)
 
   // Subscribe to real-time updates for this market
   useAccountSubscription(
     market?.publicKey,
-    ['market', marketId!]
+    ['market', eventId!]
   );
 
   // Show loading state
@@ -28,18 +28,18 @@ export function MarketDetail() {
           <Button variant="ghost" size="sm" asChild>
             <Link to="/" className="flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
-              Back to Markets
+              Back to Events
             </Link>
           </Button>
         </div>
         
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Market Not Found</AlertTitle>
+          <AlertTitle>Event Not Found</AlertTitle>
           <AlertDescription>
-            The market you're looking for doesn't exist or has been removed.
+            The event you're looking for doesn't exist or has been removed.
             <Button variant="link" asChild className="p-0 h-auto ml-2">
-              <Link to="/">Browse all markets</Link>
+              <Link to="/">Browse all events</Link>
             </Button>
           </AlertDescription>
         </Alert>
@@ -54,7 +54,7 @@ export function MarketDetail() {
         <Button variant="ghost" size="sm" asChild>
           <Link to="/" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
-            Back to Markets
+            Back to Events
           </Link>
         </Button>
       </div>

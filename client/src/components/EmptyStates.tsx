@@ -8,16 +8,16 @@ export function NoMarkets() {
   return (
     <div className="flex min-h-[300px] flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/50 p-8 text-center">
       <Package className="h-12 w-12 text-muted-foreground" />
-      <h3 className="mt-4 text-lg font-semibold">No markets found</h3>
+      <h3 className="mt-4 text-lg font-semibold">No events found</h3>
       <p className="mt-2 text-sm text-muted-foreground">
-        Get started by creating the first prediction market on Devnet.
+        Get started by creating the first fundraising prediction event on Devnet.
       </p>
       <Button
         onClick={() => navigate("/create")}
         className="mt-6"
         variant="default"
       >
-        Create Market
+        Create Event
       </Button>
     </div>
   );
@@ -33,14 +33,14 @@ export function NoPositions() {
         You haven't placed any bets yet
       </h3>
       <p className="mt-2 text-sm text-muted-foreground">
-        Start trading on prediction markets to see your positions here.
+        Start betting on fundraising events to see your positions here.
       </p>
       <Button
         onClick={() => navigate("/")}
         className="mt-6"
         variant="default"
       >
-        Explore Markets
+        Explore Events
       </Button>
     </div>
   );
@@ -54,7 +54,7 @@ export function NoTransactions() {
         Your bets will appear here
       </h3>
       <p className="mt-2 text-sm text-muted-foreground">
-        Once you place trades, they will show up in your transaction history.
+        Once you place bets, they will show up in your transaction history.
       </p>
     </div>
   );

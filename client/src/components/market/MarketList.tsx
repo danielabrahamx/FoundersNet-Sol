@@ -49,13 +49,13 @@ export function MarketList({ markets, isLoading }: MarketListProps) {
     return (
       <div className="text-center py-12">
         <div className="space-y-4">
-          <h3 className="text-lg font-medium">No markets found</h3>
+          <h3 className="text-lg font-medium">No events found</h3>
           <p className="text-muted-foreground">
-            Be the first to create a prediction market!
+            Be the first to create a fundraising prediction event!
           </p>
           <Button onClick={() => navigate('/create')} className="gap-2">
             <Plus className="h-4 w-4" />
-            Create Market
+            Create Event
           </Button>
         </div>
       </div>
