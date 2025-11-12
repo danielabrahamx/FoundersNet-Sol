@@ -1,12 +1,12 @@
 [toolchain]
-anchor_version = "0.29.0"
+anchor_version = "0.32.1"
 
 [features]
 resolution = true
 skip-lint = false
 
 [programs.devnet]
-foundersnet = "3btqT3P9jjrHo9Bef7D6E2kTGAw8QZBQ4tJ91iJF4xfq"
+foundersnet = "9puuhDpE9heWkoasZt9Vc4RS1nGfb25dchVxr7o9uUGR"
 
 [programs.mainnet]
 foundersnet = "EEZJxm2YmPHxH2VfqPXaS2k3qSmRhvKHEFMxjbzNxNfQ"
