@@ -5,7 +5,7 @@ import { IDL } from '@/idl/foundersnet'
 
 /**
  * Gets the Anchor Program instance
- * @param wallet - Wallet adapter object with publicKey and signTransaction methods
+ * @param wallet - Wallet interface object with publicKey, signTransaction, and signAllTransactions
  * @returns Program instance or null if wallet not properly initialized
  */
 export function getProgram(wallet: any): Program | null {
@@ -25,16 +25,9 @@ export function getProgram(wallet: any): Program | null {
   }
 
   try {
-    // Create a wrapper object that matches the Wallet interface expected by AnchorProvider
-    const walletInterface = {
-      publicKey: wallet.publicKey,
-      signTransaction: wallet.signTransaction.bind(wallet),
-      signAllTransactions: wallet.signAllTransactions.bind(wallet),
-    }
-
     const provider = new AnchorProvider(
       connection,
-      walletInterface,
+      wallet,
       {
         commitment: 'confirmed',
       }

@@ -9,12 +9,17 @@ import { getProgram } from '@/lib/anchor'
  * @returns Program instance or null if wallet not connected
  */
 export function useProgram(): Program | null {
-  const { wallet } = useWallet()
+  const { publicKey, signTransaction, signAllTransactions } = useWallet()
 
   return useMemo(() => {
-    if (!wallet) {
+    if (!publicKey || !signTransaction || !signAllTransactions) {
       return null
     }
-    return getProgram(wallet)
-  }, [wallet])
+    const walletInterface = {
+      publicKey,
+      signTransaction,
+      signAllTransactions,
+    }
+    return getProgram(walletInterface)
+  }, [publicKey, signTransaction, signAllTransactions])
 }
