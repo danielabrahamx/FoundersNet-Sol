@@ -39,6 +39,7 @@ export function useClaimWinnings() {
       showSuccessToast('Winnings claimed!', signature);
       queryClient.invalidateQueries({ queryKey: ['positions'] });
       queryClient.invalidateQueries({ queryKey: ['balance'] });
+      queryClient.invalidateQueries({ queryKey: ['portfolio'] });
     },
     onError: (error) => {
       showErrorToast(`Failed to claim: ${error instanceof Error ? error.message : 'Unknown error'}`);
