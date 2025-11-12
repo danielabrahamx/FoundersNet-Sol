@@ -3,6 +3,7 @@ import { PublicKey } from '@solana/web3.js'
 import { Market } from '@/types'
 import { STALE_TIME, REFETCH_INTERVAL } from '@/lib/constants'
 import { useProgram } from './useProgram'
+import { numericToEventType } from '@/lib/eventTypeConverter'
 
 /**
  * Hook to fetch a single market by ID from the blockchain
@@ -27,7 +28,7 @@ export function useMarket(marketId: string | undefined): UseQueryResult<Market |
           title: account.title as string,
           description: account.description as string,
           category: account.category,
-          eventType: account.eventType,
+          eventType: numericToEventType(account.eventType),
           startupName: account.startupName as string,
           resolutionDate: (account.resolutionDate as any).toNumber(),
           creator: account.creator,

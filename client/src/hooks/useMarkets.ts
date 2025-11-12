@@ -2,6 +2,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query'
 import { Market } from '@/types'
 import { STALE_TIME, REFETCH_INTERVAL } from '@/lib/constants'
 import { useProgram } from './useProgram'
+import { numericToEventType } from '@/lib/eventTypeConverter'
 
 /**
  * Hook to fetch all markets from the blockchain
@@ -24,7 +25,7 @@ export function useMarkets(): UseQueryResult<Market[], Error> {
           title: acc.account.title as string,
           description: acc.account.description as string,
           category: acc.account.category,
-          eventType: acc.account.eventType,
+          eventType: numericToEventType(acc.account.eventType),
           startupName: acc.account.startupName as string,
           resolutionDate: (acc.account.resolutionDate as any).toNumber(),
           creator: acc.account.creator,
