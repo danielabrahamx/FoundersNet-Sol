@@ -1,9 +1,40 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 import { PublicKey } from '@solana/web3.js'
-import { Market } from '@/types'
+import { Market, MarketStatus, MarketOutcome } from '@/types'
 import { STALE_TIME, REFETCH_INTERVAL } from '@/lib/constants'
 import { useProgram } from './useProgram'
 import { numericToEventType } from '@/lib/eventTypeConverter'
+
+/**
+ * Convert numeric status (0 or 1) to MarketStatus enum
+ */
+function numericToMarketStatus(status: number): MarketStatus {
+  switch (status) {
+    case 0:
+      return MarketStatus.OPEN
+    case 1:
+      return MarketStatus.RESOLVED
+    default:
+      return MarketStatus.OPEN
+  }
+}
+
+/**
+ * Convert numeric outcome (0, 1, or 2) to MarketOutcome enum
+ */
+function numericToMarketOutcome(outcome: number | null | undefined): MarketOutcome | undefined {
+  if (outcome === null || outcome === undefined) return undefined
+  switch (outcome) {
+    case 0:
+      return MarketOutcome.YES
+    case 1:
+      return MarketOutcome.NO
+    case 2:
+      return MarketOutcome.INVALID
+    default:
+      return undefined
+  }
+}
 
 /**
  * Hook to fetch a single market by ID from the blockchain
@@ -36,8 +67,8 @@ export function useMarket(marketId: string | undefined): UseQueryResult<Market |
           yesPool: (account.yesPool as any).toNumber(),
           noPool: (account.noPool as any).toNumber(),
           totalVolume: (account.totalVolume as any).toNumber(),
-          status: account.status,
-          outcome: account.outcome,
+          status: numericToMarketStatus(account.status),
+          outcome: numericToMarketOutcome(account.outcome),
           createdAt: (account.createdAt as any).toNumber(),
         } as Market
       } catch (error) {
