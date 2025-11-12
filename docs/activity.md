@@ -453,3 +453,41 @@ npm run dev
 ```
 
 The new admin dashboard components will be hot-reloaded at http://localhost:5173
+
+---
+
+### Prompt 2: Event Not Showing in Admin Dashboard
+
+**User Request:**
+"The event still doesn't show up" in the Admin Dashboard.
+
+**Root Cause Analysis:**
+The Admin Dashboard stats showed "Total Events: 1" but the event wasn't appearing in the Manage Events tab. Investigation revealed:
+
+1. The `useMarkets` and `useMarket` hooks were fetching data correctly from the blockchain
+2. **The Bug:** Market `status` and `outcome` fields are stored as numeric `u8` values on-chain (0 = OPEN, 1 = RESOLVED)
+3. **The Problem:** The hooks were NOT converting these numeric values to the `MarketStatus` and `MarketOutcome` enums
+4. **The Impact:** Event filtering in ManageEvents.tsx (`m.status === MarketStatus.OPEN`) was failing because it was comparing a number to a string
+
+**Solution Implemented:**
+
+1. **Updated `client/src/hooks/useMarkets.ts`:**
+   - Added `numericToMarketStatus()` function to convert u8 (0/1) to MarketStatus enum ('Open'/'Resolved')
+   - Added `numericToMarketOutcome()` function to convert u8 (0/1/2) to MarketOutcome enum ('Yes'/'No'/'Invalid')
+   - Updated market mapping to use converters for status and outcome fields
+
+2. **Updated `client/src/hooks/useMarket.ts`:**
+   - Applied the same conversion functions
+   - Ensured single market fetches also properly convert numeric enums
+
+**Files Modified:**
+- `client/src/hooks/useMarkets.ts` - Added enum converters, fixed status/outcome mapping
+- `client/src/hooks/useMarket.ts` - Added enum converters, fixed status/outcome mapping
+
+**Result:**
+✅ Events now properly filter by status
+✅ Admin Dashboard Manage Events tab will display events correctly
+✅ Event outcome resolution will display correct values
+
+**To Verify:**
+Restart the dev server with `npm run dev` - events should now appear in the Manage Events tab
