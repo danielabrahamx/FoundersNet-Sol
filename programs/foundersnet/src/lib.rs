@@ -159,16 +159,21 @@ pub mod foundersnet {
         ctx: Context<ResolveMarket>,
         outcome: MarketOutcome,
     ) -> Result<()> {
+        let market = &mut ctx.accounts.market;
+        
+        // Check if resolver is authorized (either the market's designated resolver or the admin wallet)
         require!(
-            ctx.accounts.resolver.key() == ADMIN_WALLET,
+            ctx.accounts.resolver.key() == market.resolver || ctx.accounts.resolver.key() == ADMIN_WALLET,
             FoundersNetError::UnauthorizedResolver
         );
 
-        let market = &mut ctx.accounts.market;
         require!(
             market.status == 0, // OPEN
             FoundersNetError::MarketAlreadyResolved
         );
+
+        // Allow resolution at any time (early or after resolution date)
+        // No additional time check needed - resolution can happen anytime after market is created
 
         market.status = 1; // RESOLVED
         market.outcome = Some(match outcome {
