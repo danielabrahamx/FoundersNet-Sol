@@ -346,3 +346,66 @@ The program ID extracted from the keypair (`9puuhDpE9heWkoasZt9Vc4RS1nGfb25dchVx
   - deploy.sh - Build + deploy script
   - deploy-final.sh - Final working deploy script
 - docs/activity.md (this file, appended)
+
+---
+
+## 2025-11-12 - Fix: Event Type Category Filtering
+
+### Prompt: Fix Series A/B Category Filtering
+
+**User Request:**
+Events created with "Series A" category don't appear when filtering by "Series A" - category filters not working.
+
+**Root Cause Analysis:**
+The blockchain stores `event_type` as a u8 (0-4), but the React code was:
+1. Receiving numeric values from the program
+2. Comparing them directly against string enum values like "Series A"
+3. This comparison always failed (number !== string)
+
+**Actions Taken:**
+
+1. **Created `/client/src/lib/eventTypeConverter.ts`**
+   - Maps numeric u8 values to EventType enum strings
+   - Mapping:
+     * 0 → Series A
+     * 1 → Series B
+     * 2 → Acquisition
+     * 3 → IPO
+     * 4 → Other
+   - Created `numericToEventType()` helper function
+   - Created `eventTypeToNumeric()` for future reverse conversions
+
+2. **Updated `/client/src/hooks/useMarkets.ts`**
+   - Added import of `numericToEventType`
+   - Changed: `eventType: acc.account.eventType`
+   - To: `eventType: numericToEventType(acc.account.eventType)`
+   - Now converts u8 to proper EventType enum string when fetching all markets
+
+3. **Updated `/client/src/hooks/useMarket.ts`**
+   - Added import of `numericToEventType`
+   - Applied same conversion for individual market fetches
+   - Ensures detail pages show correct event type
+
+**How Filtering Now Works:**
+1. Market fetched from blockchain with `event_type: 0` (Series A in u8)
+2. `numericToEventType(0)` converts it to `"Series A"`
+3. Filter compares: `market.eventType === "Series A"` ✅ (matches!)
+4. Event now appears in filtered results
+
+**Result:**
+✅ Series A/B and other category filters now work correctly
+✅ Events created with a category appear when that category is selected
+✅ All market listings properly filtered by event type
+✅ No breaking changes to existing functionality
+
+**Technical Details:**
+- Conversion happens at data fetch time (useMarkets, useMarket hooks)
+- No UI changes needed - filters already had correct structure
+- Type-safe conversions using switch statements
+- Handles unknown numeric values gracefully (returns undefined)
+
+**Files Created/Modified:**
+- client/src/lib/eventTypeConverter.ts (new) - Conversion helper
+- client/src/hooks/useMarkets.ts - Use converter in market.all()
+- client/src/hooks/useMarket.ts - Use converter in market.fetch()
+- docs/activity.md (this file, appended)
