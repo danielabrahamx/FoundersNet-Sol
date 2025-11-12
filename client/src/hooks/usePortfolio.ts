@@ -16,6 +16,7 @@ export interface PositionWithMarket {
   noShares: Position['noShares'];
   totalCost: Position['totalCost'];
   lastTradeAt: Position['lastTradeAt'];
+  claimed: Position['claimed'];
   
   // Additional calculated fields
   currentValue: number;
@@ -87,6 +88,7 @@ export function usePortfolio(): UseQueryResult<{
             noShares: position.noShares,
             totalCost: position.totalCost,
             lastTradeAt: position.lastTradeAt,
+            claimed: position.claimed,
             currentValue,
             pnl,
             pnlPercent,

@@ -24,6 +24,7 @@ export function PositionCard({ position }: PositionCardProps) {
   const isResolved = market.status === MarketStatus.RESOLVED;
 
   const canClaim = isResolved && 
+                   !position.claimed &&
                    ((market.outcome === MarketOutcome.YES && position.yesShares > 0) ||
                     (market.outcome === MarketOutcome.NO && position.noShares > 0) ||
                     (market.outcome === MarketOutcome.INVALID));
@@ -120,6 +121,11 @@ export function PositionCard({ position }: PositionCardProps) {
           >
             {isClaiming ? 'Claiming...' : 'Claim Winnings'}
           </Button>
+        )}
+        {isResolved && position.claimed && (
+          <div className="w-full p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg text-center">
+            <p className="text-sm font-medium text-green-700 dark:text-green-400">✓ Winnings Claimed</p>
+          </div>
         )}
       </CardContent>
     </Card>

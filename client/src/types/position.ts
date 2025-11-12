@@ -18,6 +18,8 @@ export interface UserPosition {
   totalCost: number;
   /** Timestamp of the last trade */
   lastTradeAt: number;
+  /** Whether winnings have been claimed (for resolved markets) */
+  claimed: boolean;
 }
 
 /**
