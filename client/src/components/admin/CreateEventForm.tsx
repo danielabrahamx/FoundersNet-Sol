@@ -22,14 +22,16 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
-import { Calendar } from 'lucide-react'
+import { Calendar, AlertCircle } from 'lucide-react'
 import { EventType } from '@/types/market'
 import { eventSchema, EventFormData, generateEventTitle } from '@/lib/validations/eventSchema'
 import { useCreateEvent } from '@/hooks/useCreateEvent'
+import { useWallet } from '@/hooks/useWallet'
 
 export function CreateEventForm() {
   const [titlePreview, setTitlePreview] = useState('')
   const createEventMutation = useCreateEvent()
+  const { connected, connect } = useWallet()
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
@@ -54,6 +56,11 @@ export function CreateEventForm() {
   form.watch(handleFormChange)
 
   const onSubmit = async (data: EventFormData) => {
+    if (!connected) {
+      connect()
+      return
+    }
+
     await createEventMutation.mutateAsync(data)
     form.reset()
     setTitlePreview('')
@@ -61,6 +68,20 @@ export function CreateEventForm() {
 
   return (
     <div className="space-y-6">
+      {!connected && (
+        <Card className="p-4 bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-amber-900 dark:text-amber-100">Wallet Not Connected</p>
+              <p className="text-sm text-amber-800 dark:text-amber-200 mt-1">
+                Connect your wallet to create an event. Click "Connect Wallet to Create Event" button below.
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {titlePreview && (
         <Card className="p-4 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
           <p className="text-sm font-medium text-blue-900 dark:text-blue-100">Event Title Preview:</p>
@@ -196,10 +217,14 @@ export function CreateEventForm() {
           <div className="flex gap-3 pt-4">
             <Button
               type="submit"
-              disabled={createEventMutation.isPending}
+              disabled={createEventMutation.isPending || !connected}
               className="flex-1"
             >
-              {createEventMutation.isPending ? 'Creating Event...' : 'Create Event'}
+              {!connected 
+                ? 'Connect Wallet to Create Event' 
+                : createEventMutation.isPending 
+                  ? 'Creating Event...' 
+                  : 'Create Event'}
             </Button>
             <Button
               type="button"

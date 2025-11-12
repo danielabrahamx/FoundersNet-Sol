@@ -17,31 +17,44 @@ export function useCreateEvent() {
 
   return useMutation({
     mutationFn: async (data: EventFormData) => {
-      if (!program || !publicKey) throw new Error('Wallet not connected')
+      try {
+        if (!publicKey) {
+          throw new Error('Wallet not connected')
+        }
 
-      const title = generateEventTitle(data)
-      const marketKeypair = Keypair.generate()
-      const resolutionTimestamp = new BN(Math.floor(data.resolutionDate.getTime() / 1000))
-      const liquidityLamports = new BN(solToLamports(data.initialLiquidity))
+        if (!program) {
+          throw new Error('Failed to initialize program')
+        }
 
-      const signature = await program.methods
-        .createMarket(
-          title,
-          data.description,
-          data.eventType,
-          data.startupName,
-          resolutionTimestamp,
-          liquidityLamports
-        )
-        .accounts({
-          market: marketKeypair.publicKey,
-          creator: publicKey,
-          systemProgram: SystemProgram.programId,
-        })
-        .signers([marketKeypair])
-        .rpc()
+        const title = generateEventTitle(data)
+        const marketKeypair = Keypair.generate()
+        const resolutionTimestamp = new BN(Math.floor(data.resolutionDate.getTime() / 1000))
+        const liquidityLamports = new BN(solToLamports(data.initialLiquidity))
 
-      return { signature, marketId: marketKeypair.publicKey.toString() }
+        const signature = await program.methods
+          .createMarket(
+            title,
+            data.description,
+            data.eventType,
+            data.startupName,
+            resolutionTimestamp,
+            liquidityLamports
+          )
+          .accounts({
+            market: marketKeypair.publicKey,
+            creator: publicKey,
+            systemProgram: SystemProgram.programId,
+          })
+          .signers([marketKeypair])
+          .rpc()
+
+        return { signature, marketId: marketKeypair.publicKey.toString() }
+      } catch (error) {
+        if (error instanceof Error) {
+          throw error
+        }
+        throw new Error('An unexpected error occurred while creating the event')
+      }
     },
     onSuccess: ({ signature, marketId }) => {
       showSuccessToast('Event created!', signature)
