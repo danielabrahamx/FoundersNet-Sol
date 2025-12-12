@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-foundersnet = "BxWFLkQQhJd93ME3Vc1K5JKynx3i59Ni82i9rLgiCAoM"
+foundersnet = "245syyVU4A1jY1Qa7K9PLnpcAE9Kv1qcj5J51hm5gKhd"
 
 [programs.mainnet]
 foundersnet = "EEZJxm2YmPHxH2VfqPXaS2k3qSmRhvKHEFMxjbzNxNfQ"

@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::system_program::{transfer, Transfer};
 use std::mem::size_of;
 
-declare_id!("BxWFLkQQhJd93ME3Vc1K5JKynx3i59Ni82i9rLgiCAoM");
+declare_id!("245syyVU4A1jY1Qa7K9PLnpcAE9Kv1qcj5J51hm5gKhd");
 
 #[program]
 pub mod foundersnet {
